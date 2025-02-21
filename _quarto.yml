@@ -1,0 +1,5 @@
+project:
+  render:
+    - AM-PM.qmd
+  type: website
+  output-dir: docs

@@ -8,7 +8,8 @@ abstract: >
 
   This document presents a visual representation of amplitude and phase modulation.^[**Acknowledgments** Many thanks to Nikola Bucalovic and Andrin Doll for useful discussions. Dedicated to my teacher Prof. Bart van Wees for explaining physics with pictures.]
 
-toc: false
+toc: true
+#engine: julia
 jupyter: julia-1.11
 execute:
   echo: false
@@ -23,6 +24,13 @@ format:
     code-fold: true
 #    embed-resources: true
 ---
+
+```{julia}
+#| echo: false
+#| output: false
+import Pkg
+Pkg.activate(".")
+```
 
 
 ::: {.hidden}
@@ -43,21 +51,13 @@ b0(h) = (1 + cos(h))/2
 b2(h) = (1 - cos(h))/2
 b1(h) = (sqrt(2)*sin(h/sqrt(2)) + sin(h))/2
 b3(h) = (sqrt(2)*sin(h/sqrt(2)) - sin(h))/2
-
-# We need a valid LaTeX installation to run the following
-#include("figures/generate-plots.jl")
 ```
 
 ## Background
 
 I started writing this note while working for [Zurich Instruments](http://www.zhinst.com), a Swiss maker of scientific instrumentation. At that time, the company was selling only one product, a lock-in amplifier, and we were naturally tackling all customers' problems in terms of demodulation.
 
-<!--#
-![Examples of pure amplitude modulated (left) and pure phase modulated (right) signals: in the first case the amplitude is time-dependent, in the second the spacing between successive zero crossings is time-dependent, while the amplitude remains constant.](figures/AM-PM-signal){width=650 .lightbox #fig-AM-PM-signal}
--->
-
 ```{julia}
-
 #| label: fig-AM-PM-signal
 #| fig-cap: "Examples of pure amplitude modulated (left) and pure phase modulated (right) signals: in the first case the amplitude is time-dependent, in the second the spacing between successive zero crossings is time-dependent, while the amplitude remains constant."
 
@@ -294,10 +294,6 @@ to obtain
 
 $$ e^{jh\sin\tau} = \sum_{n=-\infty}^{+\infty} J_n(h)e^{jn\tau} $$
 the standard generating expression for the Bessel functions.
-
-<!--#
-![Comparison between the first Bessel functions and their approximations @eq-even-second-order and @eq-odd-third-order normalized appropriately. Note the zero crossing of $J_0(h)$ at $h\approx 2.40$: a radio engineer understand this as no transmitter power being wasted into the carrier frequency.](figures/bessel){width=550 .lightbox #fig-bessel-plot}
--->
 
 ```{julia}
 

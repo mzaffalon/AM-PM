@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michele Zaffalon">
+<meta name="dcterms.date" content="2024-11-25">
+
+<title>Amplitude and Phase Modulation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d4be639c637f3db3c684c66cefad7e0c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background">Background</a></li>
+  <li><a href="#complex-phasors-to-represent-real-signals" id="toc-complex-phasors-to-represent-real-signals" class="nav-link" data-scroll-target="#complex-phasors-to-represent-real-signals">Complex Phasors to Represent Real Signals</a></li>
+  <li><a href="#amplitude-modulation" id="toc-amplitude-modulation" class="nav-link" data-scroll-target="#amplitude-modulation">Amplitude Modulation</a>
+  <ul class="collapse">
+  <li><a href="#phase-of-am-sidebands" id="toc-phase-of-am-sidebands" class="nav-link" data-scroll-target="#phase-of-am-sidebands">Phase of AM Sidebands</a></li>
+  </ul></li>
+  <li><a href="#phase-modulation" id="toc-phase-modulation" class="nav-link" data-scroll-target="#phase-modulation">Phase Modulation</a>
+  <ul class="collapse">
+  <li><a href="#pictorial-representation-of-first-set-of-sidebands" id="toc-pictorial-representation-of-first-set-of-sidebands" class="nav-link" data-scroll-target="#pictorial-representation-of-first-set-of-sidebands">Pictorial Representation of First Set of Sidebands</a></li>
+  <li><a href="#phase-of-pm-sidebands" id="toc-phase-of-pm-sidebands" class="nav-link" data-scroll-target="#phase-of-pm-sidebands">Phase of PM Sidebands</a></li>
+  </ul></li>
+  <li><a href="#pictorial-representation-of-higher-order-sidebands" id="toc-pictorial-representation-of-higher-order-sidebands" class="nav-link" data-scroll-target="#pictorial-representation-of-higher-order-sidebands">Pictorial representation of Higher Order Sidebands</a>
+  <ul class="collapse">
+  <li><a href="#large-phase-modulation" id="toc-large-phase-modulation" class="nav-link" data-scroll-target="#large-phase-modulation">Large Phase Modulation</a></li>
+  </ul></li>
+  <li><a href="#the-relation-with-the-bessel-coefficients" id="toc-the-relation-with-the-bessel-coefficients" class="nav-link" data-scroll-target="#the-relation-with-the-bessel-coefficients">The Relation with the Bessel Coefficients</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Amplitude and Phase Modulation</h1>
+<p class="subtitle lead">or How to tame the Bessel functions</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michele Zaffalon </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 25, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>I believe I am not the only one to struggle with the spectrum of a phase modulated signal. Even the pure tone phase modulation spectrum consists of an infinite number of sidebands whose phase changes from one sideband to the next one and whose amplitudes are given by the Bessel functions. This document presents a visual representation of amplitude and phase modulation.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+  </div>
+</div>
+
+
+</header>
+
+
+<div class="hidden">
+
+</div>
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">Background</h2>
+<p>I started writing this note while working for <a href="http://www.zhinst.com">Zurich Instruments</a>, a Swiss maker of scientific instrumentation. At that time, the company was selling only one product, a lock-in amplifier, and we were naturally tackling all customers’ problems in terms of demodulation.</p>
+<div id="cell-fig-AM-PM-signal" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display">
+<div id="fig-am-pm-signal" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-am-pm-signal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="AM-PM_files/figure-html/fig-am-pm-signal-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-am-pm-signal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Examples of pure amplitude modulated (left) and pure phase modulated (right) signals: in the first case the amplitude is time-dependent, in the second the spacing between successive zero crossings is time-dependent, while the amplitude remains constant.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In short, a lock-in amplifier finds the amplitude <span class="math inline">\(A\)</span> and phase <span class="math inline">\(\varphi\)</span> of an input signal of the type</p>
+<p><span id="eq-input-signal"><span class="math display">\[
+V_S(t) = A\cos(2\pi f_Ct+\varphi).
+\tag{1}\]</span></span> by a process called <em>demodulation</em>. The existing literature explains it with the multiplication of the input signal by sine and cosine of the reference phase, also referred to as the in-phase and quadrature of the reference but I found this explanation lacked in clarity.</p>
+<p>The multiplication by sine and cosine is equivalent to looking at the signal from a reference frame rotating with the reference phase. This element is key for the pictorial representation of amplitude and phase modulation.</p>
+</section>
+<section id="complex-phasors-to-represent-real-signals" class="level2">
+<h2 class="anchored" data-anchor-id="complex-phasors-to-represent-real-signals">Complex Phasors to Represent Real Signals</h2>
+<p>The generic modulated signal of <a href="#eq-input-signal" class="quarto-xref">Equation&nbsp;1</a> can also be written in the complex plane as the sum of two phasors, each one of length <span class="math inline">\(\tfrac{1}{2}A\)</span> rotating at the same speed <span class="math inline">\(\omega_C=2\pi f_C\)</span>, in opposite directions:</p>
+<p><span id="eq-modulated-signal"><span class="math display">\[
+\frac{A(t)}{2}\left(e^{j[\omega_Ct+\varphi(t)]}+e^{ - j[\omega_Ct+\varphi(t)]} \right)
+\tag{2}\]</span></span> with a constant carrier angular frequency <span class="math inline">\(\omega_C\)</span> and (possibly) time-dependent <span class="math inline">\(A(t)\)</span> and <span class="math inline">\(\varphi(t)\)</span>.</p>
+<p>From a spectral point of view, the two phasors are the exact copy of each other, one at positive frequency <span class="math inline">\(+f_C\)</span> and the other at negative frequency <span class="math inline">\(-f_C\)</span>, with amplitude <span class="math inline">\(\tfrac{1}{2}A\)</span> and phase <span class="math inline">\(\varphi\)</span>. We therefore discard the negative frequency component <span class="math inline">\(-f_C\)</span> term because it has the same spectral content as the one at positive frequency, just mirrored. We also neglect the constant factor <span class="math inline">\(\frac{1}{2}\)</span> that is irrelevant for amplitude and phase modulation. We are left with</p>
+<p><span class="math display">\[ A(t)e^{j[\omega_C t + \varphi(t)]}. \]</span> Next, we want to get rid of the carrier, which only shifts the spectrum by the constant quantity <span class="math inline">\(\omega_C\)</span> but carries otherwise no useful information. To do so, we multiply the quantity above by <span class="math inline">\(e^{-j\omega_C t}\)</span>.</p>
+<div id="fig-arbitrary-modulation" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-arbitrary-modulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="figures/arbitrary-modulation.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;2: The phasor of a generically modulated signal can sweep the grey area. In pure AM, only the length A(t) is time dependent, in pure phase modulation, only the phase changes. The amplitude and phase modulations are not restricted to be a fraction of the radius and \pi respectively."><img src="figures/arbitrary-modulation.svg" class="img-fluid figure-img" width="300"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-arbitrary-modulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: The phasor of a generically modulated signal can sweep the grey area. In pure AM, only the length <span class="math inline">\(A(t)\)</span> is time dependent, in pure phase modulation, only the phase changes. The amplitude and phase modulations are <em>not</em> restricted to be a fraction of the radius and <span class="math inline">\(\pi\)</span> respectively.
+</figcaption>
+</figure>
+</div>
+<p>The multiplication by <span class="math inline">\(e^{-j\omega_C t}\)</span> can also be interpreted as a change of the reference frame: indeed complex numbers provide a convenient way of dealing with rotations on a 2D plan.</p>
+<p>Suppose to be standing at the origin and rotate anti-clockwise with angular velocity <span class="math inline">\(\omega_C\)</span>. In this <em>rotating frame</em><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, the phasor will appear as essentially steady<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> except for the amplitude and phase modulation given by</p>
+<p><span id="eq-demodulated-rotating-frame"><span class="math display">\[
+d(t) = A(t)e^{j\varphi(t)}
+\tag{3}\]</span></span> In general this signal is neither a pure amplitude nor a frequency modulated signal since both vary as shown by the black arrow in <a href="#fig-arbitrary-modulation" class="quarto-xref">Figure&nbsp;2</a>.</p>
+<p>In an amplitude modulated signal, only the phasor length <span class="math inline">\(A(t)\)</span> changes (the blue line in the figure) but not its phase: in other words, all the changes are along the phasor direction and not perpendicular to it. Phase modulation on the other hand would instead move the phasor on a circle (red line), with no changes to its radius.</p>
+</section>
+<section id="amplitude-modulation" class="level2">
+<h2 class="anchored" data-anchor-id="amplitude-modulation">Amplitude Modulation</h2>
+<p>We will see that the sidebands of amplitude and <em>narrow band</em> phase modulations differ only by an angle: that is why they are indistinguishable by Fourier power spectral analysis because the phase information is lost when squaring the Fourier transform. It is easy to understand the origin of the phase difference using complex phasors.</p>
+<div id="fig-AM-sidebands-pictorial" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-AM-sidebands-pictorial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="figures/AM-Fourier.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;3: The decomposition of the sidebands of an AM signal: the sidebands must add up to have only a contribution collinear to the carrier phasor. Modulation of type \cos(\omega_mt) a) in the time domain and b) in the frequency domain and similarly for \sin(\omega_m t). In the drawing we have assumed the carrier phase offset to be zero such that the carrier phasor is pointing in the x–direction and having only real contribution. The curved arrows in a) and c) show the direction of rotation of the modulation phasors."><img src="figures/AM-Fourier.svg" class="img-fluid figure-img" width="550"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-AM-sidebands-pictorial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: The decomposition of the sidebands of an AM signal: the sidebands must add up to have only a contribution collinear to the carrier phasor. Modulation of type <span class="math inline">\(\cos(\omega_mt)\)</span> a) in the time domain and b) in the frequency domain and similarly for <span class="math inline">\(\sin(\omega_m t)\)</span>. In the drawing we have assumed the carrier phase offset to be zero such that the carrier phasor is pointing in the <span class="math inline">\(x\)</span>–direction and having only real contribution. The curved arrows in a) and c) show the direction of rotation of the modulation phasors.
+</figcaption>
+</figure>
+</div>
+<p>A general AM signal has a modulated amplitude <span class="math inline">\(A(t)\)</span> and a constant phase offset <span class="math inline">\(\varphi(t)=\varphi_0\)</span>. To be more specific, I take a pure tone AM signal</p>
+<p><span id="eq-easy-modulation-of-amplitude"><span class="math display">\[
+d_\textrm{AM}(t) \equiv 1+h\cos(\omega_mt) = 1+\frac{h}{2}\left[e^{+j\omega_mt}+e^{-j\omega_mt}\right]
+\tag{4}\]</span></span> with <em>carrier</em> amplitude <span class="math inline">\(1\)</span>, amplitude modulation <span class="math inline">\(h\)</span> and angular frequency <span class="math inline">\(\omega_m\)</span> (typically <span class="math inline">\(\omega_m\ll \omega_C\)</span> although this is not relevant for the discussion). For the moment I also set <span class="math inline">\(\varphi_0\)</span> equal to zero.</p>
+<p>We need to consider both modulation phasors of <a href="#eq-easy-modulation-of-amplitude" class="quarto-xref">Equation&nbsp;4</a>. With reference to <a href="#fig-AM-sidebands-pictorial" class="quarto-xref">Figure&nbsp;3</a> a), the modulation of the amplitude, <span class="math inline">\(h\cos(\omega_mt)\)</span>, originates from the two phasors of length <span class="math inline">\(\frac{h}{2}\)</span> rotating in opposite directions, each with frequency <span class="math inline">\(f_m\)</span>; their sum, the thick blue arrow, lays always along the <span class="math inline">\(x\)</span>–axis. These are the two sidebands of the AM spectrum.</p>
+<section id="phase-of-am-sidebands" class="level3">
+<h3 class="anchored" data-anchor-id="phase-of-am-sidebands">Phase of AM Sidebands</h3>
+<p>What about their relative phase in the Fourier (frequency) space? The pictorial representation provides the answer. The phase is determined by the phasors’ value at <span class="math inline">\(t=0\)</span>: phasor pointing along the <span class="math inline">\(x\)</span>–axis have real amplitude, phasors pointing along <span class="math inline">\(y\)</span> imaginary amplitude.</p>
+<p>In the AM case, the signal is only modulated in the direction collinear to the carrier phasor and the two sidebands must always be at relative angles such that the phasors’ sum satisfy this constraint.</p>
+<p>For instance, for the modulation of <a href="#eq-easy-modulation-of-amplitude" class="quarto-xref">Equation&nbsp;4</a>, both phasors have real value <span class="math inline">\(+\tfrac{h}{2}\)</span> at <span class="math inline">\(t=0\)</span> or <span class="math inline">\(0^\circ\)</span> with respect to the carrier. <a href="#fig-AM-sidebands-pictorial" class="quarto-xref">Figure&nbsp;3</a> b) show the carrier, purely real because we have chosen <span class="math inline">\(\varphi_0=0\)</span> and the two sidebands pointing in the same direction as that of the carrier. This is the “textbook” picture for AM.</p>
+<p>This picture changes had we instead chosen an amplitude modulation of the form</p>
+<p><span class="math display">\[ 1+h\sin(\omega_mt) = 1 - \frac{jh}{2}\left[e^{+j\omega_mt}-e^{-j\omega_mt}\right] \]</span> as in <a href="#fig-AM-sidebands-pictorial" class="quarto-xref">Figure&nbsp;3</a> c). Here the phasor with negative frequency has value <span class="math inline">\(+\tfrac{jh}{2}\)</span> at <span class="math inline">\(t=0\)</span> or <span class="math inline">\(+90^\circ\)</span> with respect to the carrier; the other at positive frequency has value <span class="math inline">\(-\tfrac{jh}{2}\)</span> or <span class="math inline">\(-90^\circ\)</span> to the carrier. <a href="#fig-AM-sidebands-pictorial" class="quarto-xref">Figure&nbsp;3</a> d). The <span class="math inline">\(90^°\)</span> angle comes from the trigonometric identity <span class="math inline">\(\sin(\omega_mt) = \cos(\omega_mt - \tfrac{\pi}{2})\)</span></p>
+<p>We are left to quickly discuss the case <span class="math inline">\(\varphi_0\ne 0\)</span>. Now the carrier phasor has an angle <span class="math inline">\(\varphi_0\)</span> with the <span class="math inline">\(x\)</span>-axis; since the signal amplitude is always modulated collinear to the carrier phasor, both modulation phasors acquire the phase <span class="math inline">\(\varphi_0\)</span>.</p>
+</section>
+</section>
+<section id="phase-modulation" class="level2">
+<h2 class="anchored" data-anchor-id="phase-modulation">Phase Modulation</h2>
+<p>In an PM signal, the situation is more complicated. We refer again to <a href="#eq-demodulated-rotating-frame" class="quarto-xref">Equation&nbsp;3</a>: a general PM signal has a modulated phase <span class="math inline">\(\varphi(t)\)</span> and a constant amplitude <span class="math inline">\(A(t)\)</span> assumed here for simplicity to be <span class="math inline">\(A(t)=1\)</span>.</p>
+<p>Consider now a pure tone PM signal</p>
+<p><span id="eq-easy-modulation-of-phase"><span class="math display">\[
+d_\textrm{PM}(t) \equiv e^{jh\sin(\omega_mt)}
+\tag{5}\]</span></span> with modulation index <span class="math inline">\(h\)</span>. Is there an intuitive way of showing why the PM signal of <a href="#eq-easy-modulation-of-phase" class="quarto-xref">Equation&nbsp;5</a> has a frequency spectrum consisting of an infinite number of sidebands at <span class="math inline">\(\pm n\omega_m\)</span> and the amplitude of the <span class="math inline">\(n\)</span>-th sideband is given by the <span class="math inline">\(n\)</span>-th Bessel function?</p>
+<section id="pictorial-representation-of-first-set-of-sidebands" class="level3">
+<h3 class="anchored" data-anchor-id="pictorial-representation-of-first-set-of-sidebands">Pictorial Representation of First Set of Sidebands</h3>
+<p><span class="math inline">\(d_\textrm{PM}(t)\)</span> has constant amplitude, so it describes a phasor that moves on a circle of radius <span class="math inline">\(1\)</span>. For a small phase swing, <span class="math inline">\(h\ll 1\)</span>, we can neglect the curvature of the circle, see <a href="#fig-PM-bessel-pictorial" class="quarto-xref">Figure&nbsp;4</a> a) and two terms only are sufficient to approximate <span class="math inline">\(d_\textrm{PM}(t)\)</span>, one real, constant, <span class="math inline">\(b_0\)</span> and one imaginary, that reverses direction every time <span class="math inline">\(\varphi_\textrm{PM}(t)\equiv \sin(\omega_m t)\)</span> does so, so it must be, to first approximation, of the form <span class="math inline">\(b_1\sin(\omega_mt)\)</span>.</p>
+<div id="fig-PM-bessel-pictorial" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-PM-bessel-pictorial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="figures/FM.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;4: The PM signal and its decomposition in terms of the Bessel functions. a) In the small modulation approximation h\ll 1, one can neglect the curvature of the circle and two terms only, b_0 and b_1\approx h, give a good approximation. b) When the modulation index h is large, the approximation breaks down. c) An extra term b_2 is needed to obtain a better approximation. This term must contribute twice per cycle of the modulation phasor and must therefore have a \cos(2\omega_mt) dependence. d) \bar{b}_2(t) = b_2\cos(2\omega_mt) gives a positive contribution at t=0: in order for their sum to be 1, b_0 must decrease."><img src="figures/FM.svg" class="img-fluid figure-img" width="450"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-PM-bessel-pictorial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: The PM signal and its decomposition in terms of the Bessel functions. a) In the small modulation approximation <span class="math inline">\(h\ll 1\)</span>, one can neglect the curvature of the circle and two terms only, <span class="math inline">\(b_0\)</span> and <span class="math inline">\(b_1\approx h\)</span>, give a good approximation. b) When the modulation index <span class="math inline">\(h\)</span> is large, the approximation breaks down. c) An extra term <span class="math inline">\(b_2\)</span> is needed to obtain a better approximation. This term must contribute twice per cycle of the modulation phasor and must therefore have a <span class="math inline">\(\cos(2\omega_mt)\)</span> dependence. d) <span class="math inline">\(\bar{b}_2(t) = b_2\cos(2\omega_mt)\)</span> gives a positive contribution at <span class="math inline">\(t=0\)</span>: in order for their sum to be 1, <span class="math inline">\(b_0\)</span> must decrease.
+</figcaption>
+</figure>
+</div>
+<p>To find the approximated values of <span class="math inline">\(b_0\)</span> and <span class="math inline">\(b_1\)</span>, we impose that <span class="math inline">\(e^{jh\sin(\omega_mt)}\)</span> and its approximation</p>
+<p><span class="math display">\[ b_0 + jb_1\sin(\omega_mt) \]</span> are equal at some values of <span class="math inline">\(\omega_mt\)</span>, for instance that the real parts are equal at <span class="math inline">\(\omega_mt = 0\)</span> and the imaginary parts at <span class="math inline">\(\omega_mt = \tfrac{\pi}{2}\)</span>. This choice gives</p>
+<p><span class="math display">\[ b_0(h) = 1,\quad b_1(h) = \sin h \approx h. \]</span> A different choice of points would have given a slightly different approximation<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
+<p>This small <span class="math inline">\(h\)</span> regime, typically <span class="math inline">\(h&lt;0.2\)</span>, is called <em>narrow band</em> PM because it can be fully described by a carrier and the two sidebands <span class="math inline">\(b_1\)</span> at <span class="math inline">\(\pm \omega_m\)</span>, thereby occupying a very limited portion of the frequency spectrum.</p>
+</section>
+<section id="phase-of-pm-sidebands" class="level3">
+<h3 class="anchored" data-anchor-id="phase-of-pm-sidebands">Phase of PM Sidebands</h3>
+<div id="fig-FM-sidebands-pictorial" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-FM-sidebands-pictorial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="figures/PM-Fourier.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;5: a) The decomposition of the sidebands of a small modulation index PM signal: the sidebands must add up to have only a contribution perpendicular to the carrier phasor. b) Fourier transform of a PM signal with time dependent modulation \sin(\omega_mt) and c) \cos(\omega_mt). d) Fourier spectrum including the 2f_m sidebands (red) generated by the term \bar{b}_2(t)."><img src="figures/PM-Fourier.svg" class="img-fluid figure-img" width="450"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-FM-sidebands-pictorial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: a) The decomposition of the sidebands of a small modulation index PM signal: the sidebands must add up to have only a contribution perpendicular to the carrier phasor. b) Fourier transform of a PM signal with time dependent modulation <span class="math inline">\(\sin(\omega_mt)\)</span> and c) <span class="math inline">\(\cos(\omega_mt)\)</span>. d) Fourier spectrum including the <span class="math inline">\(2f_m\)</span> sidebands (red) generated by the term <span class="math inline">\(\bar{b}_2(t)\)</span>.
+</figcaption>
+</figure>
+</div>
+<p>The small <span class="math inline">\(h\)</span> approximation of the phase modulation</p>
+<p><span id="eq-easy-modulation-of-phase-approximated"><span class="math display">\[
+1 + j h \sin(\omega_mt) = 1 + \frac{h}{2}\left[e^{+j\omega_mt} - e^{-j\omega_mt}\right]
+\tag{6}\]</span></span> looks very similar to the amplitude modulation <a href="#eq-easy-modulation-of-amplitude" class="quarto-xref">Equation&nbsp;4</a>, two sidebands at <span class="math inline">\(\pm f_m\)</span>. In the PM case, however, the signal is modulated in the direction <em>orthogonal</em> to the carrier as <a href="#fig-FM-sidebands-pictorial" class="quarto-xref">Figure&nbsp;5</a> a) shows and the two sidebands must be at an angle such that their sum is <span class="math inline">\(180^\circ\)</span> with the carrier.</p>
+<p>For the modulation of <a href="#eq-easy-modulation-of-phase-approximated" class="quarto-xref">Equation&nbsp;6</a>, the sideband at positive frequency <span class="math inline">\(+f_m\)</span> has amplitude <span class="math inline">\(+\frac{h}{2}\)</span> at <span class="math inline">\(t=0\)</span> and the sideband at negative frequency <span class="math inline">\(-\frac{h}{2}\)</span>, as shown in <a href="#fig-FM-sidebands-pictorial" class="quarto-xref">Figure&nbsp;5</a> b).</p>
+<p>Had we instead chosen a phase modulation of the form</p>
+<p><span class="math display">\[ e^{jh\cos(\omega_mt)} \approx 1 + jh\cos(\omega_mt) = 1 + \frac{jh}{2}\left[e^{+j\omega_mt} - e^{-j\omega_mt}\right] \]</span> with the two modulation phasors at <span class="math inline">\(t=0\)</span> having the purely imaginary amplitude <span class="math inline">\(\frac{jh}{2}\)</span>, the Fourier transform would have looked like <a href="#fig-FM-sidebands-pictorial" class="quarto-xref">Figure&nbsp;5</a> c).</p>
+</section>
+</section>
+<section id="pictorial-representation-of-higher-order-sidebands" class="level2">
+<h2 class="anchored" data-anchor-id="pictorial-representation-of-higher-order-sidebands">Pictorial representation of Higher Order Sidebands</h2>
+<p>In the case of large phase modulation (large <span class="math inline">\(h\)</span>), the approximation above fails to describe a phasor with unity amplitude, see <a href="#fig-PM-bessel-pictorial" class="quarto-xref">Figure&nbsp;4</a> b).</p>
+<p>We need to compensate it with an additional term of amplitude <span class="math inline">\(b_2(h)\)</span> in the collinear direction, <a href="#fig-PM-bessel-pictorial" class="quarto-xref">Figure&nbsp;4</a> c): such correction must be a negative quantity twice per cycle of the phasor <span class="math inline">\(d_\textrm{PM}(t)\)</span>, at its top-most and bottom-most points, so it must have a <span class="math inline">\(\cos(2\omega_mt)\)</span> dependence and therefore it accounts for the second set of sidebands at <span class="math inline">\(\pm 2\omega_m\)</span>.</p>
+<p>The new term</p>
+<p><span class="math display">\[ \bar{b}_2(t) = b_2\cos(2\omega_mt) \]</span> gives also a positive contribution at <span class="math inline">\(t=0\)</span>. If we want the modulation phasor at <span class="math inline">\(t=0\)</span> to have unit length, <span class="math inline">\(b_0\)</span> needs to decrease, as in <a href="#fig-PM-bessel-pictorial" class="quarto-xref">Figure&nbsp;4</a> d). Therefore <span class="math inline">\(b_0(h)\)</span> and <span class="math inline">\(b_2(h)\)</span> must satisfy</p>
+<p><span class="math display">\[
+  \begin{cases}
+    b_0+b_2 = 1 &amp; \text{when $d_\textrm{PM}(t)$ is horizontal} \\
+    b_0-b_2 = \cos h &amp; \text{when $d_\textrm{PM}(t)$ reaches its extremal point, }\omega_mt = \frac{\pi}{2}
+  \end{cases}
+\]</span> which gives</p>
+<p><span id="eq-even-second-order"><span class="math display">\[
+b_0(h) = \frac{1+\cos h}{2} \hspace{2em} b_2(h) = \frac{1-\cos h}{2}.
+\tag{7}\]</span></span></p>
+<p>At this point, we still do not know we are dealing with the Bessel functions <span class="math inline">\(J_n(h)\)</span>, but also <span class="math inline">\(J_0(h)\)</span> has one maximum (its global) at <span class="math inline">\(h=0\)</span> and <span class="math inline">\(J_1(h)\)</span> is linear in <span class="math inline">\(h\)</span> for small <span class="math inline">\(h\)</span>.</p>
+<p><span class="math inline">\(\bar{b}_2(t)\)</span>, being purely real, contributes to the approximation as if it was an amplitude modulation. Similar to the discussion for <a href="#eq-easy-modulation-of-amplitude" class="quarto-xref">Equation&nbsp;4</a>, the two modulation phasors at <span class="math inline">\(t=0\)</span> are collinear with the carrier phasor and the Fourier spectrum appears as depicted in <a href="#fig-FM-sidebands-pictorial" class="quarto-xref">Figure&nbsp;5</a> d).</p>
+<section id="large-phase-modulation" class="level3">
+<h3 class="anchored" data-anchor-id="large-phase-modulation">Large Phase Modulation</h3>
+<p>The pictorial representation also helps us to conclude that</p>
+<ol type="1">
+<li>the perpendicular component must be an odd function of time and the collinear an even one. One can reach the same conclusion by looking at the definition</li>
+</ol>
+<p><span class="math display">\[ e^{jh\sin(\omega_mt)} = \cos [h\sin(\omega_mt)] + j \sin [h\sin(\omega_mt)]. \]</span></p>
+<ol start="2" type="1">
+<li>only <span class="math inline">\(\sin(3\omega_mt)\)</span>, <span class="math inline">\(\sin(5\omega_mt), \ldots\)</span> contribute to the vertical component and only <span class="math inline">\(\cos(4\omega_mt)\)</span>, <span class="math inline">\(\cos(6\omega_mt), \ldots\)</span> to the horizontal one. Indeed the phasor <span class="math inline">\(e^{jh\sin(\omega_mt)}\)</span> reaches its turning point at <span class="math inline">\(\tfrac{\pi}{2}\)</span> and traces its path back, a symmetry that the terms <span class="math inline">\(\sin(2\omega_mt)\)</span> and <span class="math inline">\(\cos(3\omega_mt)\)</span> do not possess. We thus write <span class="math inline">\(d_\textrm{PM}(t)\)</span> as</li>
+</ol>
+<p><span id="eq-bessel-complex"><span class="math display">\[
+\begin{aligned}
+    e^{jh\sin(\omega_mt)} = &amp; \sum_{n\geq 0} b_{2n}(h)\cos[2n\omega_mt] \\
+    + j &amp; \sum_{n\geq 0} b_{2n+1}(h)\sin[(2n+1)\omega_mt];
+\end{aligned}
+\tag{8}\]</span></span></p>
+<ol start="3" type="1">
+<li>In the Fourier spectrum, all sine sidebands behave similar to <span class="math inline">\(\sin(\omega_mt)\)</span> and all cosine sidebands similar to <span class="math inline">\(\cos(2\omega_mt)\)</span>.</li>
+</ol>
+<div id="fig-third-order" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-third-order-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="figures/large-PM.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;6: Phasor representing a PM signal with h=0.7\pi for different phases \omega_mt and its approximation. a) \omega_mt=0 (the terms \bar{b}_1 and \bar{b}_3 are not plot); b) \omega_mt=\frac{\pi}{6} and c) \omega_mt=\frac{\pi}{2}. Note the term \bar{b}_3 giving a negative contribution to account for the phase modulation when h>\frac{\pi}{2}. The black trace represents the path traced by this approximation."><img src="figures/large-PM.svg" class="img-fluid figure-img" width="650"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-third-order-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Phasor representing a PM signal with <span class="math inline">\(h=0.7\pi\)</span> for different phases <span class="math inline">\(\omega_mt\)</span> and its approximation. a) <span class="math inline">\(\omega_mt=0\)</span> (the terms <span class="math inline">\(\bar{b}_1\)</span> and <span class="math inline">\(\bar{b}_3\)</span> are not plot); b) <span class="math inline">\(\omega_mt=\frac{\pi}{6}\)</span> and c) <span class="math inline">\(\omega_mt=\frac{\pi}{2}\)</span>. Note the term <span class="math inline">\(\bar{b}_3\)</span> giving a negative contribution to account for the phase modulation when <span class="math inline">\(h&gt;\frac{\pi}{2}\)</span>. The black trace represents the path traced by this approximation.
+</figcaption>
+</figure>
+</div>
+<p>Only a few terms are sufficient to give a fairly good approximation. <a href="#fig-third-order" class="quarto-xref">Figure&nbsp;6</a> shows this with a modulation index <span class="math inline">\(h=0.7\pi\)</span> sufficiently large that the vertical component of <span class="math inline">\(d_\textrm{PM}(t)\)</span> decreses around <span class="math inline">\(\omega_mt=\frac{\pi}{2}\)</span>. This behavior cannot be described by the term <span class="math inline">\(\sin(\omega_mt)\)</span> that only increases monotonically in <span class="math inline">\(0\le \omega_mt&lt;\tfrac{\pi}{2}\)</span>; indeed the third sideband</p>
+<p><span class="math display">\[ \bar{b}_3(t) = b_3\sin(3\omega_mt) \]</span> accounts for a negative contribution necessary for the correction, as shown in <a href="#fig-third-order" class="quarto-xref">Figure&nbsp;6</a> c).</p>
+<p>To find the values of the two coefficients <span class="math inline">\(b_1\)</span> and <span class="math inline">\(b_3\)</span>, we impose that our approximation equals <span class="math inline">\(d_\textrm{PM}(t)\)</span> at three arbitrary times: <span class="math inline">\(\omega_mt = 0\)</span> (only the real part), <span class="math inline">\(\omega_mt = \tfrac{\pi}{4}\)</span> (only the imaginary part), and <span class="math inline">\(\omega_mt = \tfrac{\pi}{2}\)</span> (both real and imaginary components). With our choice, we find that</p>
+<p><span id="eq-odd-third-order"><span class="math display">\[
+b_1(h) = \frac{\sqrt{2}\sin \frac{h}{\sqrt{2}} + \sin h}{2},\quad b_3(h) = \frac{\sqrt{2}\sin \frac{h}{\sqrt{2}} - \sin h}{2};
+\tag{9}\]</span></span> <span class="math inline">\(b_0\)</span> and <span class="math inline">\(b_2\)</span> are still given by <a href="#eq-even-second-order" class="quarto-xref">Equation&nbsp;7</a>.</p>
+</section>
+</section>
+<section id="the-relation-with-the-bessel-coefficients" class="level2">
+<h2 class="anchored" data-anchor-id="the-relation-with-the-bessel-coefficients">The Relation with the Bessel Coefficients</h2>
+<p>We want now to manipulate <a href="#eq-bessel-complex" class="quarto-xref">Equation&nbsp;8</a> and show that <span class="math inline">\(b_n(h)\)</span> are proportional to the Bessel coefficients.</p>
+<p>To do this, let us use <span class="math inline">\(\tau\equiv\omega_mt\)</span> and rewrite <a href="#eq-bessel-complex" class="quarto-xref">Equation&nbsp;8</a>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+e^{jh\sin \tau} = b_0(h) &amp;+ \sum_{n\ge 1} \frac{b_{2n}(h)}{2}\left[e^{2jn\tau}+e^{-2jn\tau}\right] \\
+&amp;+ j \sum_{n\geq 0} \frac{b_{2n+1}(h)}{2j}\left[e^{(2n+1)j\tau}-e^{-(2n+1)j\tau}\right]
+\end{aligned}
+\]</span> where in the first line, I have separated the constant term from the time dependent ones in preparation for further manipulation. I now <em>define</em></p>
+<p><span id="eq-b-relation-with-bessel"><span class="math display">\[
+J_m(h)\equiv \begin{cases}
+b_0(h) &amp; \text{if } m=0 \\
+\frac{1}{2}b_m(h) &amp; \text{if $m$ is positive or even negative} \\
+-\frac{1}{2}b_m(h) &amp; \text{if $m$ is odd negative}
+\end{cases}
+\tag{10}\]</span></span> to obtain</p>
+<p><span class="math display">\[ e^{jh\sin\tau} = \sum_{n=-\infty}^{+\infty} J_n(h)e^{jn\tau} \]</span> the standard generating expression for the Bessel functions.</p>
+<div id="cell-fig-bessel-plot" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<div id="fig-bessel-plot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bessel-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="AM-PM_files/figure-html/fig-bessel-plot-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bessel-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Comparison between the first Bessel functions and their approximations <a href="#eq-even-second-order" class="quarto-xref">Equation&nbsp;7</a> and <a href="#eq-odd-third-order" class="quarto-xref">Equation&nbsp;9</a> normalized appropriately. Note the zero crossing of <span class="math inline">\(J_0(h)\)</span> at <span class="math inline">\(h \approx 2.40\)</span>: a radio engineer understand this as no transmitter power being wasted into the carrier frequency.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Finally, <a href="#fig-bessel-plot" class="quarto-xref">Figure&nbsp;7</a> shows the the approximations we found with the Bessel coefficients, taking into account the normalization <a href="#eq-b-relation-with-bessel" class="quarto-xref">Equation&nbsp;10</a>.</p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p><strong>Acknowledgments</strong> Many thanks to Nikola Bucalovic and Andrin Doll for useful discussions. Dedicated to my teacher Prof.&nbsp;Bart van Wees for explaining physics with pictures.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Note that I cannot choose the initial orientation of the rotating frame to have the phase <span class="math inline">\(\varphi_C\)</span>, that is by multiplying the signal by <span class="math inline">\(e^{-j[\omega_C t + \varphi_C]}\)</span> because the negative component in this reference frame would have an initial phase of <span class="math inline">\(-2\varphi_c\)</span>, thereby having a different phase compared to the positive frequency.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>The change of reference frame is a common trick to remove the large fast dynamics that hides the small slow but interesting one.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>An alternative way to find the values of <span class="math inline">\(b_0\)</span> and <span class="math inline">\(b_1\)</span> makes use of the small argument approximation (<em>i.e.</em> Taylor expansion) for the exponential: <span class="math display">\[ e^{jh\sin(\omega_mt)} \approx 1 + j h\sin(\omega_mt)\ \rightarrow\ b_0 = 1,\ b_1(h) = h. \]</span> This is consistent with the previous result since for small <span class="math inline">\(h\)</span> we have <span class="math inline">\(\sin h\approx h\)</span>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>
